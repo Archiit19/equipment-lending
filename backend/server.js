@@ -11,5 +11,6 @@ app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') || '*', credentials: 
 app.use(express.json());
 app.use(morgan('dev'));
 
+await connectDB();
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Backend listening on port ${PORT}`));
