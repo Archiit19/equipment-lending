@@ -16,6 +16,7 @@ const equipmentSchema = Joi.object({
   description: Joi.string().allow(''),
 });
 
+
 router.get('/', auth, async (req, res, next) => {
   try {
     const { q, category, availableOnly, startDate, endDate } = req.query;
