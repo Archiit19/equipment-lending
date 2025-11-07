@@ -7,7 +7,8 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (token) api.get('/auth/me').then(({data}) => setUser(data)).catch(()=>{})
+    if (token)
+        api.get('/auth/me').then(({data}) => setUser(data)).catch(()=>{})
   }, [])
 
   const login = async (email, password) => {

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import api from '../api/axios'
 
 export default function RequestCreate() {
-  const { id } = useParams() // equipment id
+  const { id } = useParams()
   const nav = useNavigate()
   const [equipment, setEquipment] = useState(null)
   const [form, setForm] = useState({ quantity:1, startDate:'', endDate:'' })

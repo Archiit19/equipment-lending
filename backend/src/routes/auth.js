@@ -53,8 +53,39 @@ const registerSchema = Joi.object({
  *     responses:
  *       201:
  *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 656b4cf27a1dcd1234567890
+ *                     name:
+ *                       type: string
+ *                       example: John Doe
+ *                     email:
+ *                       type: string
+ *                       example: john@example.com
+ *                     role:
+ *                       type: string
+ *                       example: student
  *       409:
  *         description: Email already in use
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Email already in use
  */
 router.post('/register', async (req, res, next) => {
     try {
@@ -72,7 +103,7 @@ router.post('/register', async (req, res, next) => {
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login user
+ *     summary: Login an existing user and receive a JWT token
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -89,9 +120,40 @@ router.post('/register', async (req, res, next) => {
  *                 example: Pass@123
  *     responses:
  *       200:
- *         description: Successful login
+ *         description: Successful login, returns token and user details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 656b4cf27a1dcd1234567890
+ *                     name:
+ *                       type: string
+ *                       example: Jane Smith
+ *                     email:
+ *                       type: string
+ *                       example: jane@example.com
+ *                     role:
+ *                       type: string
+ *                       example: staff
  *       401:
  *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Invalid credentials
  */
 router.post('/login', async (req, res, next) => {
     try {
@@ -109,15 +171,43 @@ router.post('/login', async (req, res, next) => {
  * @swagger
  * /api/auth/me:
  *   get:
- *     summary: Get current logged-in user's profile
+ *     summary: Retrieve details of the currently authenticated user
  *     tags: [Auth]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Returns current user's data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   example: 656b4cf27a1dcd1234567890
+ *                 name:
+ *                   type: string
+ *                   example: Jane Smith
+ *                 email:
+ *                   type: string
+ *                   example: jane@example.com
+ *                 role:
+ *                   type: string
+ *                   example: staff
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
  *       401:
  *         description: Unauthorized (missing or invalid token)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized
  */
 router.get('/me', auth, async (req, res, next) => {
     try {

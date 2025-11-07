@@ -16,7 +16,13 @@ export default function MyRequests() {
       <h2>My Requests</h2>
       <table className="table">
         <thead>
-          <tr><th>Item</th><th>Qty</th><th>From</th><th>To</th><th>Status</th></tr>
+          <tr>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Status</th>
+          </tr>
         </thead>
         <tbody>
           {list.map(r => (

@@ -40,21 +40,47 @@ const createSchema = Joi.object({
  *             properties:
  *               itemId:
  *                 type: string
- *                 description: ID of the equipment item
+ *                 example: 656b4cf27a1dcd1234567890
  *               quantity:
  *                 type: number
- *                 description: Quantity requested
+ *                 example: 2
  *               startDate:
  *                 type: string
  *                 format: date
- *                 description: Start date of borrowing
+ *                 example: 2025-11-05
  *               endDate:
  *                 type: string
  *                 format: date
- *                 description: End date of borrowing
+ *                 example: 2025-11-10
  *     responses:
  *       201:
  *         description: Request created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   example: 6572b1cfe55adf001edbb888
+ *                 item:
+ *                   type: string
+ *                   example: 656b4cf27a1dcd1234567890
+ *                 requester:
+ *                   type: string
+ *                   example: 655f123e12ab3f001e7d456c
+ *                 quantity:
+ *                   type: integer
+ *                   example: 2
+ *                 startDate:
+ *                   type: string
+ *                   format: date
+ *                 endDate:
+ *                   type: string
+ *                   format: date
+ *                 status:
+ *                   type: string
+ *                   example: requested
  *       400:
  *         description: Validation error or unavailable quantity
  *       404:
@@ -97,13 +123,52 @@ router.post('/', auth, async (req, res, next) => {
  *     responses:
  *       200:
  *         description: List of requests retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     example: 6572b2f1e55adf001edbc111
+ *                   item:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                         example: DSLR Camera
+ *                       category:
+ *                         type: string
+ *                         example: Media
+ *                   requester:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                         example: John Doe
+ *                       email:
+ *                         type: string
+ *                         example: john@example.com
+ *                   quantity:
+ *                     type: integer
+ *                     example: 1
+ *                   startDate:
+ *                     type: string
+ *                     format: date
+ *                   endDate:
+ *                     type: string
+ *                     format: date
+ *                   status:
+ *                     type: string
+ *                     example: approved
  */
 router.get('/', auth, async (req, res, next) => {
     try {
         const { all } = req.query;
         const filter = {};
         if (all === 'true' && (req.user.role === 'staff' || req.user.role === 'admin')) {
-            // all requests
         } else {
             filter.requester = req.user.id;
         }
@@ -133,6 +198,20 @@ router.get('/', auth, async (req, res, next) => {
  *     responses:
  *       200:
  *         description: Request approved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   example: 6572b3afe55adf001edbc222
+ *                 status:
+ *                   type: string
+ *                   example: approved
+ *                 decisionMaker:
+ *                   type: string
+ *                   example: 656b4cf27a1dcd1234567890
  *       400:
  *         description: Invalid state transition
  *       404:
@@ -170,6 +249,16 @@ router.patch('/:id/approve', auth, requireRole('staff', 'admin'), async (req, re
  *     responses:
  *       200:
  *         description: Request rejected successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 status:
+ *                   type: string
+ *                   example: rejected
  *       400:
  *         description: Invalid request state
  *       404:
@@ -205,6 +294,20 @@ router.patch('/:id/reject', auth, requireRole('staff', 'admin'), async (req, res
  *     responses:
  *       200:
  *         description: Request marked as issued
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 status:
+ *                   type: string
+ *                   example: issued
+ *                 issuedAt:
+ *                   type: string
+ *                   format: date-time
+ *                   example: 2025-11-06T12:00:00.000Z
  *       400:
  *         description: Only approved requests can be issued
  *       404:
@@ -241,6 +344,20 @@ router.patch('/:id/issue', auth, requireRole('staff', 'admin'), async (req, res,
  *     responses:
  *       200:
  *         description: Request marked as returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 status:
+ *                   type: string
+ *                   example: returned
+ *                 returnedAt:
+ *                   type: string
+ *                   format: date-time
+ *                   example: 2025-11-10T10:45:00.000Z
  *       400:
  *         description: Invalid request status
  *       404:

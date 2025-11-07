@@ -14,7 +14,8 @@ export default function NavBar() {
     async function load() {
       try {
         const { data } = await api.get('/notifications')
-        if (mounted) setNotifications(data.filter(n => !n.read))
+        if (mounted)
+            setNotifications(data.filter(n => !n.read))
       } catch {}
     }
     if (user) load()

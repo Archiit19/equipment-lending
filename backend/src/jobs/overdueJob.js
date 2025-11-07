@@ -15,11 +15,9 @@ export default function startOverdueJob() {
                 status: 'issued',
                 endDate: { $lt: now }
             })
-                .populate('item', 'name')
-                .populate('requester', 'name email');
+                .populate('item', 'name').populate('requester', 'name email');
 
             if (!toMark.length) return;
-
 
             const admins = await User.find({ role: 'admin' }, '_id name');
 
@@ -33,16 +31,13 @@ export default function startOverdueJob() {
                     message: `Your booking for "${r.item?.name ?? 'item'}" is overdue. Please return it immediately.`
                 });
 
-
                 for (const admin of admins) {
                     await Notification.create({
                         user: admin._id,
                         title: 'Overdue item alert',
                         message: `Equipment "${r.item?.name ?? 'item'}" borrowed by ${r.requester?.name ?? 'a student'} is overdue and needs to be returned.`
                     });
-                }
-            }
-
+                }}
             console.log(`Marked ${toMark.length} request(s) as overdue and sent notifications.`);
         } catch (err) {
             console.error('Overdue cron error', err);

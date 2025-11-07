@@ -1,4 +1,3 @@
-/* ---------- Add/Edit Equipment Card ---------- */
 .card {
     width: 100%;
     max-width: 640px;
@@ -24,7 +23,6 @@
     gap: 1rem;
 }
 
-/* ---------- Form Inputs ---------- */
 .card label {
     font-weight: 600;
     font-size: 0.9rem;
@@ -56,7 +54,6 @@
     box-shadow: 0 0 0 3px rgba(10, 77, 219, 0.15);
 }
 
-/* ---------- Save Button ---------- */
 .card .btn.primary {
     margin-top: 1rem;
     width: 100%;
@@ -76,7 +73,6 @@
     opacity: 0.9;
 }
 
-/* ---------- Error Box ---------- */
 .card .error-box,
 .card .card[style*="background:#fee"] {
     background: #ffe8e8 !important;
@@ -88,7 +84,6 @@
     margin-bottom: 1rem;
 }
 
-/* ---------- Responsive ---------- */
 @media (max-width: 600px) {
     .card {
         padding: 2rem 1.5rem;

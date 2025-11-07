@@ -63,6 +63,47 @@ const equipmentSchema = Joi.object({
  *     responses:
  *       200:
  *         description: List of equipment retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     example: 656b4cf27a1dcd1234567890
+ *                   name:
+ *                     type: string
+ *                     example: Microscope
+ *                   category:
+ *                     type: string
+ *                     example: Lab
+ *                   condition:
+ *                     type: string
+ *                     example: Good
+ *                   quantity:
+ *                     type: integer
+ *                     example: 10
+ *                   description:
+ *                     type: string
+ *                     example: Optical microscope with 100x zoom
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *       401:
+ *         description: Unauthorized - Missing or invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized
  */
 router.get('/', auth, async (req, res, next) => {
     try {
@@ -71,7 +112,6 @@ router.get('/', auth, async (req, res, next) => {
         if (q) filter.name = { $regex: new RegExp(q, 'i') };
         if (category) filter.category = category;
         const items = await Equipment.find(filter).sort({ createdAt: -1 }).lean();
-        // optional availability preview if dates provided
         if (availableOnly === 'true' && startDate && endDate) {
             const filtered = [];
             for (const it of items) {
@@ -105,17 +145,48 @@ router.get('/', auth, async (req, res, next) => {
  *             properties:
  *               name:
  *                 type: string
+ *                 example: Basketball Kit
  *               category:
  *                 type: string
+ *                 example: Sports
  *               condition:
  *                 type: string
+ *                 example: Fair
  *               quantity:
  *                 type: number
+ *                 example: 6
  *               description:
  *                 type: string
+ *                 example: Includes ball and jersey
  *     responses:
  *       201:
  *         description: Equipment created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   example: 6571d9bfe55adf001edbb123
+ *                 name:
+ *                   type: string
+ *                   example: Basketball Kit
+ *                 category:
+ *                   type: string
+ *                   example: Sports
+ *                 condition:
+ *                   type: string
+ *                   example: Fair
+ *                 quantity:
+ *                   type: integer
+ *                   example: 6
+ *                 description:
+ *                   type: string
+ *                   example: Includes ball and jersey
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
  *       400:
  *         description: Validation error
  *       401:
@@ -147,8 +218,39 @@ router.post('/', auth, requireRole('admin'), async (req, res, next) => {
  *     responses:
  *       200:
  *         description: Equipment details fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   example: 656b4cf27a1dcd1234567890
+ *                 name:
+ *                   type: string
+ *                   example: Microscope
+ *                 category:
+ *                   type: string
+ *                   example: Lab
+ *                 condition:
+ *                   type: string
+ *                   example: Good
+ *                 quantity:
+ *                   type: integer
+ *                   example: 10
+ *                 description:
+ *                   type: string
+ *                   example: Optical microscope with 100x zoom
  *       404:
  *         description: Equipment not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Not found
  */
 router.get('/:id', auth, async (req, res, next) => {
     try {
@@ -193,6 +295,29 @@ router.get('/:id', auth, async (req, res, next) => {
  *     responses:
  *       200:
  *         description: Equipment updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   example: 656b4cf27a1dcd1234567890
+ *                 name:
+ *                   type: string
+ *                   example: Microscope
+ *                 category:
+ *                   type: string
+ *                   example: Lab
+ *                 quantity:
+ *                   type: integer
+ *                   example: 10
+ *                 condition:
+ *                   type: string
+ *                   example: Excellent
+ *                 updatedAt:
+ *                   type: string
+ *                   format: date-time
  *       400:
  *         description: Invalid data
  *       404:
@@ -224,18 +349,41 @@ router.put('/:id', auth, requireRole('admin'), async (req, res, next) => {
  *     responses:
  *       200:
  *         description: Equipment deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ok:
+ *                   type: boolean
+ *                   example: true
  *       400:
  *         description: Cannot delete item with active requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Cannot delete: equipment has active requests
  *       404:
  *         description: Equipment not found
  */
 router.delete('/:id', auth, requireRole('admin'), async (req, res, next) => {
     try {
-        const active = await Request.countDocuments({ item: req.params.id, status: { $in: ['requested','approved','issued'] } });
-        if (active > 0) return res.status(400).json({ error: 'Cannot delete: equipment has active requests' });
+        const active = await Request.countDocuments({
+            item: req.params.id,
+            status: { $in: ['requested','approved','issued']
+            }
+        });
+        if (active > 0)
+            return res.status(400).json({ error: 'Cannot delete: equipment has active requests' });
         await Equipment.findByIdAndDelete(req.params.id);
         res.json({ ok: true });
-    } catch (err) { next(err); }
+    } catch (err) {
+        next(err);
+    }
 });
 
 export default router;

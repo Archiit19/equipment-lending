@@ -20,8 +20,8 @@ const options = {
     },
     security: [{ bearerAuth: [] }]
   },
-  apis: [] // keeping inline for brevity
+  apis: ['./src/routes/*.js']
 };
 
-const swaggerSpec = swaggerJSDoc(options);
-export default swaggerSpec;
+const swaggerSpecifications = swaggerJSDoc(options);
+export default swaggerSpecifications;

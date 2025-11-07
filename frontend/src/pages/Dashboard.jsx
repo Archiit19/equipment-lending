@@ -13,11 +13,15 @@ export default function Dashboard() {
 
   const load = async () => {
     const params = new URLSearchParams()
-    if (q) params.set('q', q)
-    if (category) params.set('category', category)
+    if (q)
+        params.set('q', q)
+    if (category)
+        params.set('category', category)
     if (availableOnly) {
-      if (dates.start) params.set('startDate', dates.start)
-      if (dates.end) params.set('endDate', dates.end)
+      if (dates.start)
+          params.set('startDate', dates.start)
+      if (dates.end)
+          params.set('endDate', dates.end)
       params.set('availableOnly', 'true')
     }
     const { data } = await api.get('/equipment?' + params.toString())

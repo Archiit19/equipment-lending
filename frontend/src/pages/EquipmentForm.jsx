@@ -15,7 +15,6 @@ export default function EquipmentForm() {
       try { const { data } = await api.get('/equipment/' + id); setForm({ name:data.name, category:data.category, condition:data.condition, quantity:data.quantity, description:data.description||'' }); } catch {}
     }
     load()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   const onSubmit = async (e) => {

@@ -13,8 +13,10 @@ import Notifications from './pages/notification.jsx';
 
 function ProtectedRoute({ children, roles }) {
   const { user } = useAuth();
-  if (!user) return <Navigate to="/login" replace />;
-  if (roles && !roles.includes(user.role)) return <Navigate to="/" replace />;
+  if (!user)
+      return <Navigate to="/login" replace />;
+  if (roles && !roles.includes(user.role))
+      return <Navigate to="/" replace />;
   return children;
 }
 

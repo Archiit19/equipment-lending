@@ -33,7 +33,15 @@ export default function AdminRequests() {
 
       <table className="table" style={{marginTop:8}}>
         <thead>
-          <tr><th>Item</th><th>By</th><th>Qty</th><th>From</th><th>To</th><th>Status</th><th>Actions</th></tr>
+          <tr>
+              <th>Item</th>
+              <th>By</th>
+              <th>Qty</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Status</th>
+              <th>Actions</th>
+          </tr>
         </thead>
         <tbody>
           {filtered.map(r => (

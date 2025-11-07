@@ -5,7 +5,9 @@ import { useAuth } from '../context/AuthContext.jsx'
 export default function Register() {
   const { register } = useAuth()
   const nav = useNavigate()
-  const [form, setForm] = useState({ name:'', email:'', password:'', role:'student' })
+  const [form, setForm] = useState({
+      name:'', email:'', password:'', role:'student' }
+  )
   const [error, setError] = useState('')
 
   const onSubmit = async (e) => {
